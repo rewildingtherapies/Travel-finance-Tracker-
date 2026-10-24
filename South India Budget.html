@@ -1,0 +1,796 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>South India Budget</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one phone-width column; the daily budget is the hero, detail stacks beneath, tabs pinned to the bottom. */
+:root {
+  --bg: #f3f5f1;
+  --surface: #ffffff;
+  --ink: #15302a;          /* backwater green-black */
+  --muted: #5d6f69;
+  --line: #d9e1dc;
+  --accent: #1f6b57;       /* palm green */
+  --accent-soft: #e2efe9;
+  --spice: #c98a12;        /* turmeric */
+  --good: #23824f;
+  --bad: #b8432f;
+  --good-soft: #e3f3e8;
+  --bad-soft: #f8e6e1;
+  --hero: #15302a;
+  --hero-ink: #f1f5ef;
+  --hero-muted: #a9c0b6;
+  --font-display: "Young Serif", Georgia, "Times New Roman", serif;
+  --font-body: "Figtree", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1715; --surface: #15211e; --ink: #e6eee9; --muted: #93a8a0; --line: #26352f;
+    --accent: #5fc0a0; --accent-soft: #1b3029; --spice: #e3a83a; --good: #5cc989; --bad: #ef7f68;
+    --good-soft: #17301f; --bad-soft: #3a1d17; --hero: #1b2c27; --hero-ink: #f1f5ef; --hero-muted: #9db7ac;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1715; --surface: #15211e; --ink: #e6eee9; --muted: #93a8a0; --line: #26352f;
+  --accent: #5fc0a0; --accent-soft: #1b3029; --spice: #e3a83a; --good: #5cc989; --bad: #ef7f68;
+  --good-soft: #17301f; --bad-soft: #3a1d17; --hero: #1b2c27; --hero-ink: #f1f5ef; --hero-muted: #9db7ac;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+}
+.wrap {
+  max-width: 520px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 18px 120px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.muted { color: var(--muted); }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--spice); outline-offset: 2px; }
+
+/* Hero */
+.hero { background: var(--hero); color: var(--hero-ink); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.hero-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.hero-top .eyebrow { color: var(--spice); }
+.day { font-weight: 600; color: var(--hero-ink); }
+.remaining-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.remaining-row .val { font-family: var(--font-display); font-size: 30px; }
+.remaining-row .lab { color: var(--hero-muted); }
+.budget-lab { color: var(--hero-muted); }
+.budget-big { font-family: var(--font-display); font-size: clamp(54px, 17vw, 76px); line-height: 1; letter-spacing: -.01em; }
+.budget-big small { font-family: var(--font-body); font-size: 18px; color: var(--hero-muted); font-weight: 500; letter-spacing: 0; }
+.budget-row { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px 16px; flex-wrap: wrap; }
+.today-spent { text-align: right; padding-bottom: 4px; }
+.today-v { font-family: var(--font-display); font-size: 30px; line-height: 1.1; }
+.today-v.over { color: var(--bad); }
+:root:not([data-theme="dark"]) .today-v.over { color: #f39a86; }
+.today-sub { font-size: 13px; color: var(--hero-muted); }
+.today-meter { height: 6px; border-radius: 99px; background: color-mix(in srgb, var(--hero-muted) 25%, transparent); overflow: hidden; margin-top: -6px; }
+.today-meter i { display: block; height: 100%; background: var(--spice); border-radius: 99px; }
+.today-meter.over i { background: #f39a86; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-weight: 700; font-size: 14px; width: fit-content; }
+.chip.ahead { background: var(--good-soft); color: var(--good); }
+.chip.behind { background: var(--bad-soft); color: var(--bad); }
+.chip.track { background: var(--accent-soft); color: var(--accent); }
+.vs { color: var(--hero-muted); font-size: 13px; }
+.edit-trip { background: none; border: 1px solid color-mix(in srgb, var(--hero-muted) 45%, transparent); color: var(--hero-ink); border-radius: 10px; padding: 9px 12px; font-size: 14px; font-weight: 600; text-align: left; width: fit-content; }
+.edit-trip u { color: var(--spice); text-decoration: none; }
+
+/* Cards */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.card h2 { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stat .k { font-size: 13px; color: var(--muted); }
+.stat .v { font-family: var(--font-display); font-size: 26px; line-height: 1.15; }
+.stat .s { font-size: 12px; color: var(--muted); }
+.meter { height: 8px; background: var(--accent-soft); border-radius: 99px; overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--accent); border-radius: 99px; }
+.meter.over i { background: var(--bad); }
+.note { font-size: 13px; color: var(--muted); }
+.reserve { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.reserve .v { font-family: var(--font-display); font-size: 22px; }
+.pill { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+
+/* Chart */
+.chart svg { width: 100%; height: auto; display: block; }
+.legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
+
+/* Category list */
+.cats { display: flex; flex-direction: column; gap: 10px; }
+.cat { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; }
+.cat .bar { grid-column: 1 / -1; height: 6px; background: var(--accent-soft); border-radius: 99px; overflow: hidden; }
+.cat .bar i { display: block; height: 100%; background: var(--c, var(--accent)); }
+
+/* Expenses list */
+.group { display: flex; flex-direction: column; }
+.group h3 { font-size: 13px; font-weight: 700; color: var(--muted); padding: 10px 2px 6px; display: flex; justify-content: space-between; }
+.exp { display: grid; grid-template-columns: 10px 1fr auto; gap: 10px; align-items: center; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; text-align: left; width: 100%; margin-bottom: 6px; }
+.exp .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+.exp .t { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.exp .sub { font-size: 12px; color: var(--muted); }
+.exp .amt { font-weight: 700; text-align: right; }
+.exp .amt small { display: block; font-weight: 400; font-size: 12px; color: var(--muted); }
+.empty { text-align: center; padding: 28px 16px; color: var(--muted); }
+
+/* Forms */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 13px; font-weight: 600; color: var(--muted); }
+.field input, .field select { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; width: 100%; min-width: 0; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.amount-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.seg button { border: 0; background: var(--bg); padding: 0 14px; font-weight: 700; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--surface); }
+.toggle { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.toggle input { width: 46px; height: 26px; appearance: none; background: var(--line); border-radius: 99px; position: relative; flex: none; cursor: pointer; transition: background .15s; }
+.toggle input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); transition: transform .15s; }
+.toggle input:checked { background: var(--accent); }
+.toggle input:checked::after { transform: translateX(20px); }
+.btn { border: 0; border-radius: 12px; padding: 13px 16px; font-weight: 700; background: var(--accent); color: var(--surface); }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn.danger { background: transparent; color: var(--bad); border: 1px solid var(--bad); }
+.btn.danger.armed { background: var(--bad); color: var(--surface); }
+.btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.btns .btn { flex: 1 1 auto; }
+.hint { font-size: 12px; color: var(--muted); }
+
+/* Sheet */
+.scrim { position: fixed; inset: 0; background: rgba(5, 15, 12, .45); z-index: 30; display: flex; align-items: flex-end; justify-content: center; }
+.sheet { background: var(--surface); width: 100%; max-width: 520px; border-radius: 20px 20px 0 0; max-height: 92%; overflow-y: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-top: 18px; padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 14px; }
+.sheet-head { display: flex; justify-content: space-between; align-items: center; }
+.sheet-head h2 { font-family: var(--font-display); font-weight: 400; font-size: 22px; }
+.x { background: none; border: 0; font-size: 26px; line-height: 1; color: var(--muted); padding: 4px 8px; }
+
+/* Tabs + FAB */
+.tabs { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--surface); border-top: 1px solid var(--line);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px); }
+.tabs-in { max-width: 520px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr 64px 1fr 1fr; align-items: center; }
+.tab { background: none; border: 0; padding: 14px 2px; font-weight: 600; color: var(--muted); font-size: 13px; min-width: 0; }
+
+/* Reports */
+.rtable { display: flex; flex-direction: column; gap: 12px; }
+.rrow { display: grid; grid-template-columns: 1fr auto; gap: 3px 12px; align-items: baseline; }
+.rrow .name { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.rrow .tot { font-weight: 700; }
+.rrow .meta { font-size: 12px; color: var(--muted); }
+.rrow .bar { grid-column: 1 / -1; height: 6px; background: var(--accent-soft); border-radius: 99px; overflow: hidden; }
+.rrow .bar i { display: block; height: 100%; background: var(--c, var(--accent)); }
+.tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+.tag.under { background: var(--good-soft); color: var(--good); }
+.tag.over { background: var(--bad-soft); color: var(--bad); }
+.tag.none { background: var(--accent-soft); color: var(--muted); }
+.top { counter-reset: top; display: flex; flex-direction: column; gap: 10px; }
+.top .rrow { grid-template-columns: 22px 1fr auto; }
+.top .n { font-weight: 700; color: var(--muted); }
+.csv-box { width: 100%; min-height: 120px; font: 12px ui-monospace, Menlo, monospace; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+.tab[aria-current="page"] { color: var(--accent); }
+.fab { justify-self: center; width: 56px; height: 56px; margin-top: -22px; border-radius: 50%; border: 4px solid var(--bg); background: var(--spice); color: #1d1606; font-size: 30px; font-weight: 400; line-height: 1; box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(90px + env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 99px; font-weight: 600; z-index: 40; font-size: 14px; }
+.banner { font-size: 13px; padding: 10px 12px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap" id="app">
+  <section id="view-home"></section>
+  <section id="view-expenses" hidden></section>
+  <section id="view-reports" hidden></section>
+  <section id="view-settings" hidden></section>
+</div>
+
+<nav class="tabs" aria-label="Sections">
+  <div class="tabs-in">
+    <button class="tab" id="tab-home" data-view="home" aria-current="page">Home</button>
+    <button class="tab" id="tab-expenses" data-view="expenses">Expenses</button>
+    <button class="fab" id="fab" aria-label="Add expense">+</button>
+    <button class="tab" id="tab-reports" data-view="reports">Reports</button>
+    <button class="tab" id="tab-settings" data-view="settings">Settings</button>
+  </div>
+</nav>
+
+<div class="scrim" id="scrim" hidden>
+  <form class="sheet" id="sheet" novalidate>
+    <div class="sheet-head"><h2 id="sheet-title">Add expense</h2><button type="button" class="x" id="sheet-close" aria-label="Close">×</button></div>
+    <div class="field">
+      <label for="f-amount">Amount</label>
+      <div class="amount-row">
+        <input id="f-amount" inputmode="decimal" placeholder="0" autocomplete="off">
+        <div class="seg" role="group" aria-label="Currency">
+          <button type="button" id="cur-inr" data-cur="INR" aria-pressed="true">₹</button>
+          <button type="button" id="cur-gbp" data-cur="GBP" aria-pressed="false">£</button>
+        </div>
+      </div>
+      <div class="hint" id="f-conv"></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="f-cat">Category</label><select id="f-cat"></select></div>
+      <div class="field"><label for="f-loc">Location</label><select id="f-loc"></select></div>
+    </div>
+    <div class="row2">
+      <div class="field"><label for="f-date">Date</label><input id="f-date" type="date"></div>
+      <div class="field"><label for="f-note">Note</label><input id="f-note" placeholder="e.g. Thali, Fort Kochi" autocomplete="off"></div>
+    </div>
+    <div class="hint" id="f-err" style="color: var(--bad)"></div>
+    <div class="btns">
+      <button type="submit" class="btn" id="f-save">Save expense</button>
+      <button type="button" class="btn danger" id="f-delete" hidden>Delete</button>
+    </div>
+  </form>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const CATS = [
+  { id: "accommodation", name: "Accommodation", c: "#1f6b57" },
+  { id: "motorbike", name: "Motorbike & fuel", c: "#c98a12" },
+  { id: "transport", name: "Transport & flights", c: "#3d7fa6" },
+  { id: "food", name: "Food & drink", c: "#b8432f" },
+  { id: "experiences", name: "Experiences & excursions", c: "#7b5ea7" },
+  { id: "entertainment", name: "Entertainment & nightlife", c: "#d0618f" },
+  { id: "gifts", name: "Gifts & souvenirs", c: "#2f9c95" },
+  { id: "misc", name: "Miscellaneous", c: "#6f7f78" },
+  { id: "emergency", name: "Emergency (from reserve)", c: "#8a6a3a" },
+];
+const CAT = Object.fromEntries(CATS.map(c => [c.id, c]));
+// Stops in route order; "Travel day" covers buses, flights and riding between stops.
+const LOCATIONS = ["Fort Kochi", "Athirappilly", "Munnar", "Marayoor / Kanthalloor", "Thekkady / Periyar", "Kerala Backwaters",
+  "Kochi", "Arambol", "Agonda", "Elsewhere in Goa", "Travel day", "Before the trip", "Other"];
+const DEFAULTS = { total: 2500, reserve: 140, includeReserve: false, startDate: "2026-12-14", tripDays: 40, inrPerGbp: 115, dateOverride: "" };
+const LS_KEY = "sib-local-v1";
+
+let settings = { ...DEFAULTS };
+let expenses = [];
+let store = null;      // { mode, saveExpense, deleteExpense, saveSettings }
+let currentView = "home";
+let editingId = null;
+let formCur = "INR";
+
+const $ = id => document.getElementById(id);
+const gbp = n => (n < 0 ? "−£" : "£") + Math.abs(n).toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const gbp0 = n => (n < 0 ? "−£" : "£") + Math.abs(Math.round(n)).toLocaleString("en-GB");
+const inr = n => "₹" + Math.round(n).toLocaleString("en-IN");
+const DAY = 86400000;
+const parseDate = s => { const [y, m, d] = s.split("-").map(Number); return Date.UTC(y, m - 1, d); };
+const fmtISO = t => new Date(t).toISOString().slice(0, 10);
+const fmtDay = s => new Date(parseDate(s)).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" });
+function todayISO() {
+  if (settings.dateOverride) return settings.dateOverride;
+  const d = new Date();
+  return fmtISO(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+}
+
+/* ---------- The budget maths ---------- */
+function compute() {
+  const s = settings, N = Math.max(1, s.tripDays | 0);
+  const today = todayISO();
+  const idx = Math.floor((parseDate(today) - parseDate(s.startDate)) / DAY) + 1; // 1 = first day
+  let phase, dayNum, remainingDays, completedDays;
+  if (idx < 1) { phase = "before"; dayNum = 0; remainingDays = N; completedDays = 0; }
+  else if (idx > N) { phase = "after"; dayNum = N; remainingDays = 0; completedDays = N; }
+  else { phase = "during"; dayNum = idx; remainingDays = N - idx + 1; completedDays = idx - 1; }
+
+  const isEm = e => e.category === "emergency";
+  const sum = list => list.reduce((a, e) => a + (e.gbp || 0), 0);
+  const reserve = Math.max(0, s.reserve || 0);
+  const pool = s.includeReserve ? s.total : s.total - reserve;   // the money the daily budget is drawn from
+  // Spending that comes out of the pool; with the reserve kept aside, only emergencies beyond it count.
+  const poolSpent = list => s.includeReserve ? sum(list)
+    : sum(list.filter(e => !isEm(e))) + Math.max(0, sum(list.filter(isEm)) - reserve);
+
+  const emergencySpent = sum(expenses.filter(isEm));
+  const spent = poolSpent(expenses);
+  const reserveOverflow = s.includeReserve ? 0 : Math.max(0, emergencySpent - reserve);
+  const reserveLeft = s.includeReserve ? null : Math.max(0, reserve - emergencySpent);
+  const remaining = pool - spent;
+
+  // Today's budget is set from what was left at the start of today, so it holds steady all day.
+  const spentExceptToday = poolSpent(expenses.filter(e => e.date !== today));
+  const spentToday = spent - spentExceptToday;
+  const dynamic = remainingDays > 0 ? (pool - spentExceptToday) / remainingDays : null;
+  const leftToday = dynamic == null ? null : dynamic - spentToday;
+  const baseline = pool / N;
+  const diff = dynamic == null ? 0 : dynamic - baseline;
+  const status = dynamic == null ? "done" : Math.abs(diff) < 0.5 ? "track" : diff > 0 ? "ahead" : "behind";
+
+  // Daily average: spending dated before today ÷ completed trip days.
+  const average = completedDays > 0 ? poolSpent(expenses.filter(e => e.date < today)) / completedDays : null;
+
+  return { N, today, phase, dayNum, remainingDays, completedDays, pool, spent, remaining, dynamic, leftToday, baseline, diff, status,
+    average, spentToday, emergencySpent, reserve, reserveLeft, reserveOverflow,
+    daysToStart: phase === "before" ? 1 - idx : 0 };
+}
+
+/* ---------- Rendering ---------- */
+function render() {
+  const m = compute();
+  renderHome(m);
+  renderExpenses(m);
+  renderReports(m);
+  renderSettings();
+}
+
+/* ---------- Reports (all money spent, emergencies included) ---------- */
+function reportData(m) {
+  const N = m.N, start = parseDate(settings.startDate);
+  const total = expenses.reduce((a, e) => a + (e.gbp || 0), 0);
+  // Trip days that have started, counting today.
+  const daysSoFar = m.phase === "before" ? 0 : m.phase === "after" ? N : m.dayNum;
+
+  const locMap = {};
+  expenses.forEach(e => {
+    const k = e.location || "Not set";
+    const r = locMap[k] || (locMap[k] = { name: k, total: 0, count: 0, dates: new Set() });
+    r.total += e.gbp || 0; r.count++; r.dates.add(e.date);
+  });
+  const locOrder = n => { const i = LOCATIONS.indexOf(n); return i < 0 ? 99 : i; };
+  const byLocation = Object.values(locMap).sort((a, b) => locOrder(a.name) - locOrder(b.name))
+    .map(r => ({ name: r.name, total: r.total, count: r.count, days: r.dates.size, perDay: r.total / r.dates.size }));
+
+  const weeks = [];
+  const nWeeks = Math.ceil(N / 7);
+  const before = expenses.filter(e => parseDate(e.date) < start).reduce((a, e) => a + e.gbp, 0);
+  const after = expenses.filter(e => (parseDate(e.date) - start) / DAY >= N).reduce((a, e) => a + e.gbp, 0);
+  for (let w = 0; w < nWeeks; w++) {
+    const first = w * 7, len = Math.min(7, N - first);
+    const t = expenses.filter(e => { const i = (parseDate(e.date) - start) / DAY; return i >= first && i < first + len; })
+      .reduce((a, e) => a + e.gbp, 0);
+    const elapsed = Math.max(0, Math.min(len, daysSoFar - first));
+    const allowance = m.baseline * elapsed;
+    weeks.push({ label: `Week ${w + 1}`, from: fmtISO(start + first * DAY), to: fmtISO(start + (first + len - 1) * DAY),
+      days: len, elapsed, total: t, allowance, perDay: elapsed ? t / elapsed : null });
+  }
+
+  const catMap = {};
+  expenses.forEach(e => { const k = CAT[e.category] ? e.category : "misc"; catMap[k] = (catMap[k] || 0) + (e.gbp || 0); });
+  const byCategory = CATS.filter(c => catMap[c.id]).map(c => ({ ...c, total: catMap[c.id], share: total ? catMap[c.id] / total : 0,
+    perDay: daysSoFar ? catMap[c.id] / daysSoFar : null })).sort((a, b) => b.total - a.total);
+
+  const top = [...expenses].sort((a, b) => b.gbp - a.gbp).slice(0, 10);
+  return { total, daysSoFar, byLocation, weeks, before, after, byCategory, top };
+}
+
+function renderReports(m) {
+  const r = reportData(m);
+  if (!expenses.length) {
+    $("view-reports").innerHTML = `<div class="card empty"><strong>No spending to report yet</strong><div>Log expenses with + and pick a location. Reports group them by place, week and category.</div></div>`;
+    return;
+  }
+  const maxLoc = Math.max(...r.byLocation.map(l => l.total));
+  const maxWeek = Math.max(...r.weeks.map(w => w.total), 1);
+  const rng = w => `${fmtDay(w.from).replace(/^\w+ /, "")} – ${fmtDay(w.to).replace(/^\w+ /, "")}`;
+  const weekTag = w => {
+    if (!w.elapsed) return w.total ? `<span class="tag none">Not started</span>` : `<span class="tag none">Upcoming</span>`;
+    const d = w.total - w.allowance;
+    return d <= 0 ? `<span class="tag under">${gbp0(-d)} under</span>` : `<span class="tag over">${gbp0(d)} over</span>`;
+  };
+  $("view-reports").innerHTML = `
+    <div class="wrap" style="padding:0;gap:14px">
+      <div class="card">
+        <div class="pair">
+          <div class="stat"><div class="k">Total spent</div><div class="v">${gbp(r.total)}</div><div class="s">${expenses.length} expense${expenses.length === 1 ? "" : "s"}, emergencies included</div></div>
+          <div class="stat"><div class="k">Per trip day</div><div class="v">${r.daysSoFar ? gbp(r.total / r.daysSoFar) : "—"}</div><div class="s">${r.daysSoFar ? `over ${r.daysSoFar} day${r.daysSoFar === 1 ? "" : "s"}, today included` : "after the trip starts"}</div></div>
+        </div>
+        <div class="btns"><button type="button" class="btn" id="csv-btn">Export CSV</button></div>
+        <div id="csv-out" hidden></div>
+      </div>
+
+      <div class="card"><h2>By location</h2><div class="rtable">${r.byLocation.map(l => `
+        <div class="rrow"><span class="name">${esc(l.name)}</span><span class="tot">${gbp(l.total)}</span>
+          <span class="meta">${l.days} day${l.days === 1 ? "" : "s"} with spending · ${gbp(l.perDay)}/day</span><span class="meta">${l.count} item${l.count === 1 ? "" : "s"}</span>
+          <div class="bar"><i style="width:${(l.total / maxLoc * 100).toFixed(1)}%"></i></div></div>`).join("")}
+      </div></div>
+
+      <div class="card"><h2>By week</h2><div class="rtable">
+        ${r.before ? `<div class="rrow"><span class="name">Before the trip</span><span class="tot">${gbp(r.before)}</span><span class="meta">Pre-booked before ${fmtDay(settings.startDate)}</span></div>` : ""}
+        ${r.weeks.map(w => `
+        <div class="rrow"><span class="name">${w.label} <span class="meta" style="font-weight:400">${rng(w)}</span></span><span class="tot">${gbp(w.total)}</span>
+          <span class="meta">${w.elapsed ? `${gbp(w.perDay)}/day over ${w.elapsed} day${w.elapsed === 1 ? "" : "s"} · allowance ${gbp0(w.allowance)}` : `${w.days} days`}</span>${weekTag(w)}
+          <div class="bar"><i style="width:${(w.total / maxWeek * 100).toFixed(1)}%;background:${w.elapsed && w.total > w.allowance ? "var(--bad)" : "var(--accent)"}"></i></div></div>`).join("")}
+        ${r.after ? `<div class="rrow"><span class="name">After the trip</span><span class="tot">${gbp(r.after)}</span></div>` : ""}
+      </div><div class="note">Allowance is your ${gbp(m.baseline)}/day starting allowance × the days of that week so far.</div></div>
+
+      <div class="card"><h2>By category</h2><div class="rtable">${r.byCategory.map(c => `
+        <div class="rrow" style="--c:${c.c}"><span class="name">${c.name}</span><span class="tot">${gbp(c.total)}</span>
+          <span class="meta">${Math.round(c.share * 100)}% of spending${c.perDay != null ? ` · ${gbp(c.perDay)}/day` : ""}</span><span></span>
+          <div class="bar"><i style="width:${(c.share * 100).toFixed(1)}%"></i></div></div>`).join("")}
+      </div></div>
+
+      <div class="card"><h2>Top expenses</h2><div class="top">${r.top.map((e, i) => {
+        const c = CAT[e.category] || CAT.misc;
+        return `<div class="rrow"><span class="n">${i + 1}</span><span class="name">${esc(e.note || c.name)}</span><span class="tot">${gbp(e.gbp)}</span>
+          <span></span><span class="meta">${fmtDay(e.date)} · ${c.name}${e.location ? " · " + esc(e.location) : ""}</span><span class="meta">${e.currency === "INR" ? inr(e.amount) : ""}</span></div>`;
+      }).join("")}</div></div>
+    </div>`;
+}
+
+/* ---------- CSV export ---------- */
+function buildCSV() {
+  const q = v => { const s = v == null ? "" : String(v); return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+  const start = parseDate(settings.startDate);
+  const rows = [["Date", "Trip day", "Location", "Category", "Note", "Amount", "Currency", "Rate (INR per GBP)", "GBP"]];
+  [...expenses].sort((a, b) => a.date.localeCompare(b.date) || (a.created || 0) - (b.created || 0)).forEach(e => {
+    const d = Math.floor((parseDate(e.date) - start) / DAY) + 1;
+    rows.push([e.date, d >= 1 && d <= settings.tripDays ? d : "", e.location || "", (CAT[e.category] || CAT.misc).name, e.note || "",
+      e.amount, e.currency, e.rate || "", (e.gbp || 0).toFixed(2)]);
+  });
+  return rows.map(r => r.map(q).join(",")).join("\r\n") + "\r\n";
+}
+let downloadsNs;
+$("view-reports").addEventListener("click", async e => {
+  if (!e.target.closest("#csv-btn")) return;
+  const csv = buildCSV(), name = `south-india-expenses-${todayISO()}.csv`;
+  if (downloadsNs === undefined) downloadsNs = window.claude?.use ? await window.claude.use("downloads").catch(() => null) : null;
+  if (downloadsNs) {
+    try { await downloadsNs.save({ filename: name, data: csv }); toast("CSV saved"); return; }
+    catch (err) { if (err && err.code === "declined") return; }
+  }
+  // Outside claude.ai (e.g. hosted on GitHub Pages) an ordinary download link works.
+  if (!window.claude) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    return;
+  }
+  // No download available here: copy it, and show it so it can be selected by hand.
+  const out = $("csv-out");
+  out.hidden = false;
+  out.innerHTML = `<div class="note">Downloads aren't available here, so here's the CSV to copy into Numbers or a .csv file.</div><textarea class="csv-box" id="csv-text" readonly></textarea>`;
+  $("csv-text").value = csv;
+  try { await navigator.clipboard.writeText(csv); toast("CSV copied"); } catch (err) { $("csv-text").select(); }
+});
+
+function statusChip(m) {
+  if (m.status === "done") return `<span class="chip track">Trip complete</span>`;
+  if (m.status === "track") return `<span class="chip track">✓ On track</span>`;
+  const amt = gbp(Math.abs(m.diff));
+  return m.status === "ahead"
+    ? `<span class="chip ahead">↑ Ahead of budget · ${amt} more per day</span>`
+    : `<span class="chip behind">↓ Behind budget · ${amt} less per day</span>`;
+}
+
+function renderHome(m) {
+  const dayLine = m.phase === "before"
+    ? `Starts in ${m.daysToStart} day${m.daysToStart === 1 ? "" : "s"} · ${fmtDay(settings.startDate)}`
+    : m.phase === "after" ? `Trip finished · ${m.N} days` : `Day ${m.dayNum} of ${m.N}`;
+  const budgetVal = m.dynamic == null ? "—" : gbp(m.dynamic);
+  const avgVal = m.average == null ? "—" : gbp(m.average);
+  const avgSub = m.average == null
+    ? (m.phase === "before" ? "Starts after day 1" : "Shows after day 1")
+    : `over ${m.completedDays} completed day${m.completedDays === 1 ? "" : "s"}`;
+  let compare = "";
+  if (m.average != null && m.dynamic != null) {
+    const under = m.average <= m.baseline;
+    compare = `<div class="note">${under
+      ? `You're spending ${gbp(m.baseline - m.average)}/day less than your ${gbp(m.baseline)} starting allowance.`
+      : `You're spending ${gbp(m.average - m.baseline)}/day more than your ${gbp(m.baseline)} starting allowance.`}</div>`;
+  }
+  const usedPct = m.pool > 0 ? Math.min(100, Math.max(0, m.spent / m.pool * 100)) : 0;
+  const reserveLabel = settings.includeReserve ? "Included in daily budget" : "Protected";
+  const reserveCard = `
+    <div class="card">
+      <h2>Emergency reserve</h2>
+      <div class="reserve">
+        <div>
+          <div class="reserve-v v" style="font-family:var(--font-display);font-size:22px">${settings.includeReserve ? gbp0(m.reserve) : gbp(m.reserveLeft)} <span class="muted" style="font-family:var(--font-body);font-size:14px">of ${gbp0(m.reserve)}</span></div>
+          <div class="note">${settings.includeReserve
+            ? "Your daily budget currently counts the reserve as spending money."
+            : m.reserveOverflow > 0
+              ? `Emergencies went ${gbp(m.reserveOverflow)} over the reserve, so that came out of your daily money.`
+              : m.emergencySpent > 0 ? `${gbp(m.emergencySpent)} used for emergencies so far.` : "Not counted in your daily budget. Log emergencies under “Emergency” to draw on it."}</div>
+        </div>
+        <span class="pill">${reserveLabel}</span>
+      </div>
+    </div>`;
+
+  $("view-home").innerHTML = `
+    <div class="wrap" style="padding:0;gap:14px">
+      <div class="hero">
+        <div class="hero-top"><span class="eyebrow">South India</span><span class="day">${dayLine}</span></div>
+        <div class="remaining-row"><span class="val">${gbp(m.remaining)}</span><span class="lab">remaining${settings.includeReserve ? "" : " to spend"}</span></div>
+        <div class="budget-row">
+          <div>
+            <div class="eyebrow budget-lab">${m.phase === "during" ? "Today's budget" : m.phase === "before" ? "Starting daily budget" : "Daily budget"}</div>
+            <div class="budget-big">${budgetVal}<small>/day</small></div>
+          </div>
+          ${m.leftToday == null ? "" : `<div class="today-spent">
+            <div class="eyebrow budget-lab">${m.leftToday < 0 ? "Over today" : "Left today"}</div>
+            <div class="today-v ${m.leftToday < 0 ? "over" : ""}">${gbp(Math.abs(m.leftToday))}</div>
+            <div class="today-sub">${gbp(m.spentToday)} spent</div>
+          </div>`}
+        </div>
+        ${m.leftToday == null ? "" : `<div class="today-meter ${m.leftToday < 0 ? "over" : ""}"><i style="width:${m.dynamic > 0 ? Math.min(100, Math.max(0, m.spentToday / m.dynamic * 100)).toFixed(1) : 100}%"></i></div>`}
+        ${statusChip(m)}
+        <div class="vs">Compared with your ${gbp(m.baseline)}/day starting allowance${settings.includeReserve ? "" : ` (${gbp0(m.pool)} ÷ ${m.N} days, reserve kept aside)`}.</div>
+        <button type="button" class="edit-trip" id="edit-trip">${gbp0(settings.total)} budget · ${m.N} days <span aria-hidden="true">·</span> <u>Change</u></button>
+      </div>
+
+      <div class="card">
+        <div class="pair">
+          <div class="stat"><div class="k">Daily budget</div><div class="v">${budgetVal}</div><div class="s">per remaining day (${m.remainingDays} left)</div></div>
+          <div class="stat"><div class="k">Average spent</div><div class="v">${avgVal}</div><div class="s">${avgSub}</div></div>
+        </div>
+        ${compare}
+      </div>
+
+      <div class="card">
+        <div class="pair">
+          <div class="stat"><div class="k">Spent so far</div><div class="v">${gbp(m.spent)}</div><div class="s">of ${gbp0(m.pool)}</div></div>
+          <div class="stat"><div class="k">Spent today</div><div class="v">${gbp(m.spentToday)}</div><div class="s">${fmtDay(m.today)}</div></div>
+        </div>
+        <div class="meter ${m.remaining < 0 ? "over" : ""}"><i style="width:${usedPct}%"></i></div>
+      </div>
+
+      ${reserveCard}
+      ${chartCard(m)}
+      ${categoryCard(m)}
+    </div>`;
+}
+
+function chartCard(m) {
+  // Daily spend across the trip against the starting allowance.
+  const s = settings, N = m.N, start = parseDate(s.startDate);
+  const byDay = new Array(N).fill(0);
+  expenses.forEach(e => {
+    if (!s.includeReserve && e.category === "emergency") return;
+    const i = Math.floor((parseDate(e.date) - start) / DAY);
+    if (i >= 0 && i < N) byDay[i] += e.gbp || 0;
+  });
+  const pre = expenses.filter(e => parseDate(e.date) < start && (s.includeReserve || e.category !== "emergency")).reduce((a, e) => a + e.gbp, 0);
+  const W = 340, H = 120, padL = 30, padB = 18, padT = 8;
+  const max = Math.max(m.baseline * 1.6, ...byDay, 10);
+  const top = Math.ceil(max / 25) * 25;
+  const y = v => padT + (H - padT - padB) * (1 - v / top);
+  const bw = (W - padL) / N;
+  const bars = byDay.map((v, i) => {
+    const h = y(0) - y(v), isToday = m.phase === "during" && i === m.dayNum - 1;
+    const fill = v > m.baseline ? "var(--bad)" : "var(--accent)";
+    return `<rect x="${(padL + i * bw + bw * .15).toFixed(1)}" y="${y(v).toFixed(1)}" width="${(bw * .7).toFixed(1)}" height="${Math.max(0, h).toFixed(1)}" rx="1.5" fill="${fill}" opacity="${isToday ? 1 : .8}"></rect>`;
+  }).join("");
+  const todayMark = m.phase === "during"
+    ? `<rect x="${(padL + (m.dayNum - 1) * bw).toFixed(1)}" y="${padT}" width="${bw.toFixed(1)}" height="${(y(0) - padT).toFixed(1)}" fill="var(--spice)" opacity=".14"></rect>` : "";
+  const ticks = [0, top / 2, top].map(v => `<text x="${padL - 6}" y="${(y(v) + 3.5).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--muted)">£${Math.round(v)}</text><line x1="${padL}" x2="${W}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="var(--line)" stroke-width="1"></line>`).join("");
+  const xl = [1, 10, 20, 30, N].filter((d, i, a) => d <= N && a.indexOf(d) === i)
+    .map(d => `<text x="${(padL + (d - .5) * bw).toFixed(1)}" y="${H - 4}" text-anchor="middle" font-size="9" fill="var(--muted)">${d}</text>`).join("");
+  const base = `<line x1="${padL}" x2="${W}" y1="${y(m.baseline).toFixed(1)}" y2="${y(m.baseline).toFixed(1)}" stroke="var(--spice)" stroke-width="1.5" stroke-dasharray="4 3"></line>`;
+  return `
+    <div class="card chart">
+      <h2>Daily spending</h2>
+      <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Spending per trip day compared with the starting daily allowance">${ticks}${todayMark}${bars}${base}${xl}</svg>
+      <div class="legend"><span style="--c:var(--accent)">At or under allowance</span><span style="--c:var(--bad)">Over allowance</span><span style="--c:var(--spice)">${gbp(m.baseline)} allowance</span></div>
+      ${pre > 0 ? `<div class="note">${gbp(pre)} was spent before day 1 (pre-booked) and isn't shown on a day.</div>` : ""}
+    </div>`;
+}
+
+function categoryCard(m) {
+  const totals = {};
+  expenses.forEach(e => { totals[e.category] = (totals[e.category] || 0) + (e.gbp || 0); });
+  const rows = CATS.filter(c => totals[c.id]).sort((a, b) => totals[b.id] - totals[a.id]);
+  if (!rows.length) return `
+    <div class="card"><h2>By category</h2><div class="note">Nothing logged yet. Tap + to add your first expense; you can enter rupees or pounds.</div></div>`;
+  const max = Math.max(...rows.map(c => totals[c.id]));
+  return `
+    <div class="card"><h2>By category</h2><div class="cats">${rows.map(c => `
+      <div class="cat" style="--c:${c.c}"><span>${c.name}</span><strong>${gbp(totals[c.id])}</strong><div class="bar"><i style="width:${(totals[c.id] / max * 100).toFixed(1)}%"></i></div></div>`).join("")}
+    </div></div>`;
+}
+
+function renderExpenses(m) {
+  const sorted = [...expenses].sort((a, b) => b.date.localeCompare(a.date) || (b.created || 0) - (a.created || 0));
+  if (!sorted.length) {
+    $("view-expenses").innerHTML = `<div class="card empty"><strong>No expenses yet</strong><div>Tap + to log one. Each entry updates your daily budget straight away.</div></div>`;
+    return;
+  }
+  const groups = {};
+  sorted.forEach(e => (groups[e.date] = groups[e.date] || []).push(e));
+  $("view-expenses").innerHTML = Object.entries(groups).map(([date, list]) => {
+    const t = list.reduce((a, e) => a + e.gbp, 0);
+    const di = Math.floor((parseDate(date) - parseDate(settings.startDate)) / DAY) + 1;
+    const dl = di >= 1 && di <= m.N ? ` · Day ${di}` : di < 1 ? " · Before trip" : "";
+    return `<div class="group"><h3><span>${fmtDay(date)}${dl}</span><span>${gbp(t)}</span></h3>${list.map(e => {
+      const c = CAT[e.category] || CAT.misc;
+      return `<button class="exp" data-id="${e.id}" style="--c:${c.c}"><span class="dot"></span>
+        <span style="min-width:0"><div class="t">${esc(e.note || c.name)}</div><div class="sub">${c.name}${e.location ? " · " + esc(e.location) : ""}</div></span>
+        <span class="amt">${gbp(e.gbp)}${e.currency === "INR" ? `<small>${inr(e.amount)}</small>` : ""}</span></button>`;
+    }).join("")}</div>`;
+  }).join("");
+}
+
+function renderSettings() {
+  if ($("view-settings").dataset.built) { syncSettingsInputs(); return; }
+  $("view-settings").dataset.built = "1";
+  $("view-settings").innerHTML = `
+    <div class="wrap" style="padding:0;gap:14px">
+      <div class="card">
+        <h2>Your budget &amp; days</h2>
+        <div class="row2">
+          <div class="field"><label for="s-total">Full trip budget (£)</label><input id="s-total" inputmode="decimal"></div>
+          <div class="field"><label for="s-days">Number of days</label><input id="s-days" inputmode="numeric"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="s-start">First day</label><input id="s-start" type="date"></div>
+          <div class="field"><label for="s-reserve">Emergency reserve (£)</label><input id="s-reserve" inputmode="decimal"></div>
+        </div>
+        <div class="hint" id="s-summary"></div>
+      </div>
+      <div class="card">
+        <h2>Daily budget</h2>
+        <div class="toggle"><label for="s-include"><strong>Include contingency in daily budget</strong><div class="hint">Off keeps the emergency reserve out of your everyday allowance.</div></label><input type="checkbox" id="s-include"></div>
+      </div>
+      <div class="card">
+        <h2>Currency</h2>
+        <div class="field"><label for="s-rate">Exchange rate (₹ per £1)</label><input id="s-rate" inputmode="decimal"><div class="hint">Used when you log an expense in rupees. Existing entries keep the rate they were saved with.</div></div>
+      </div>
+      <div class="card">
+        <h2>Preview a date</h2>
+        <div class="field"><label for="s-override">Pretend today is</label><input id="s-override" type="date"><div class="hint">Leave empty to use the real date. Handy for seeing how the home screen looks mid-trip.</div></div>
+        <button type="button" class="btn ghost" id="s-override-clear">Use the real date</button>
+      </div>
+      <div id="s-storage" class="banner"></div>
+    </div>`;
+  const num = (id, key, int) => $(id).addEventListener("change", () => {
+    const v = int ? parseInt($(id).value, 10) : parseFloat($(id).value);
+    if (!isFinite(v) || v < 0 || (int && v < 1)) { syncSettingsInputs(); toast("Enter a positive number"); return; }
+    updateSettings({ [key]: v });
+  });
+  num("s-total", "total"); num("s-reserve", "reserve"); num("s-days", "tripDays", true); num("s-rate", "inrPerGbp");
+  $("s-include").addEventListener("change", () => updateSettings({ includeReserve: $("s-include").checked }));
+  $("s-start").addEventListener("change", () => $("s-start").value && updateSettings({ startDate: $("s-start").value }));
+  $("s-override").addEventListener("change", () => updateSettings({ dateOverride: $("s-override").value || "" }));
+  $("s-override-clear").addEventListener("click", () => updateSettings({ dateOverride: "" }));
+  syncSettingsInputs();
+}
+function syncSettingsInputs() {
+  const s = settings;
+  $("s-include").checked = !!s.includeReserve;
+  $("s-total").value = s.total; $("s-reserve").value = s.reserve; $("s-start").value = s.startDate;
+  $("s-days").value = s.tripDays; $("s-rate").value = s.inrPerGbp; $("s-override").value = s.dateOverride || "";
+  const lastDay = fmtISO(parseDate(s.startDate) + (Math.max(1, s.tripDays) - 1) * DAY);
+  const pool = s.includeReserve ? s.total : s.total - s.reserve;
+  $("s-summary").textContent = `${fmtDay(s.startDate)} to ${fmtDay(lastDay)} · starting allowance ${gbp(pool / Math.max(1, s.tripDays))}/day`
+    + (s.includeReserve ? "" : ` (${gbp0(pool)} after the ${gbp0(s.reserve)} reserve)`);
+  $("s-storage").textContent = store?.mode === "db"
+    ? "Expenses save to this artifact, so they're there on your phone and laptop."
+    : "Saving in this browser only. Open the page signed in to claude.ai to keep expenses across devices.";
+}
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+/* ---------- Navigation ---------- */
+function show(view) {
+  currentView = view;
+  ["home", "expenses", "reports", "settings"].forEach(v => {
+    $("view-" + v).hidden = v !== view;
+    $("tab-" + v).toggleAttribute("aria-current", v === view);
+    if (v === view) $("tab-" + v).setAttribute("aria-current", "page");
+  });
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => show(b.dataset.view)));
+$("view-home").addEventListener("click", e => {
+  if (e.target.closest("#edit-trip")) { show("settings"); setTimeout(() => $("s-total").focus(), 30); }
+});
+$("view-expenses").addEventListener("click", e => { const b = e.target.closest(".exp"); if (b) openSheet(b.dataset.id); });
+
+/* ---------- Add / edit sheet ---------- */
+$("f-cat").innerHTML = CATS.map(c => `<option value="${c.id}">${c.name}</option>`).join("");
+$("f-loc").innerHTML = LOCATIONS.map(l => `<option value="${esc(l)}">${esc(l)}</option>`).join("");
+// New expenses default to the location of the most recently logged one.
+function lastLocation() {
+  const last = [...expenses].filter(e => e.location).sort((a, b) => (b.created || 0) - (a.created || 0))[0];
+  return last ? last.location : LOCATIONS[0];
+}
+function setCur(cur) {
+  formCur = cur;
+  $("cur-inr").setAttribute("aria-pressed", cur === "INR"); $("cur-gbp").setAttribute("aria-pressed", cur === "GBP");
+  updateConv();
+}
+function updateConv() {
+  const v = parseFloat($("f-amount").value);
+  $("f-conv").textContent = !isFinite(v) || v <= 0 ? (formCur === "INR" ? `At ₹${settings.inrPerGbp} per £1` : "")
+    : formCur === "INR" ? `= ${gbp(v / settings.inrPerGbp)} at ₹${settings.inrPerGbp} per £1` : `≈ ${inr(v * settings.inrPerGbp)}`;
+}
+$("cur-inr").addEventListener("click", () => setCur("INR"));
+$("cur-gbp").addEventListener("click", () => setCur("GBP"));
+$("f-amount").addEventListener("input", updateConv);
+function openSheet(id) {
+  editingId = id || null;
+  const e = id ? expenses.find(x => x.id === id) : null;
+  $("sheet-title").textContent = e ? "Edit expense" : "Add expense";
+  $("f-save").textContent = e ? "Save changes" : "Save expense";
+  $("f-amount").value = e ? e.amount : "";
+  $("f-cat").value = e ? e.category : "food";
+  $("f-loc").value = e && e.location ? e.location : lastLocation();
+  $("f-date").value = e ? e.date : todayISO();
+  $("f-note").value = e ? e.note || "" : "";
+  $("f-err").textContent = "";
+  $("f-delete").hidden = !e; $("f-delete").classList.remove("armed"); $("f-delete").textContent = "Delete";
+  setCur(e ? e.currency : "INR");
+  $("scrim").hidden = false;
+  setTimeout(() => $("f-amount").focus(), 30);
+}
+function closeSheet() { $("scrim").hidden = true; editingId = null; }
+$("fab").addEventListener("click", () => openSheet());
+$("sheet-close").addEventListener("click", closeSheet);
+$("scrim").addEventListener("click", e => { if (e.target === $("scrim")) closeSheet(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("scrim").hidden) closeSheet(); });
+$("sheet").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const amount = parseFloat($("f-amount").value.replace(/,/g, ""));
+  if (!isFinite(amount) || amount <= 0) { $("f-err").textContent = "Enter an amount above zero."; return; }
+  if (!$("f-date").value) { $("f-err").textContent = "Pick a date."; return; }
+  const prev = editingId ? expenses.find(x => x.id === editingId) : null;
+  const rate = prev && prev.currency === "INR" && formCur === "INR" ? prev.rate : settings.inrPerGbp;
+  const exp = {
+    id: editingId || newId(), date: $("f-date").value, amount, currency: formCur,
+    rate: formCur === "INR" ? rate : null,
+    gbp: Math.round((formCur === "INR" ? amount / rate : amount) * 100) / 100,
+    category: $("f-cat").value, location: $("f-loc").value, note: $("f-note").value.trim().slice(0, 120), created: prev ? prev.created : Date.now(),
+  };
+  const wasEdit = !!editingId;
+  upsertLocal(exp); closeSheet(); render();
+  toast(wasEdit ? "Expense updated" : `Added ${gbp(exp.gbp)}`);
+  try { await store.saveExpense(exp); } catch (e) { toast("Couldn't save. Check your connection and try again."); }
+});
+$("f-delete").addEventListener("click", async () => {
+  const b = $("f-delete");
+  if (!b.classList.contains("armed")) { b.classList.add("armed"); b.textContent = "Tap again to delete"; return; }
+  const id = editingId;
+  expenses = expenses.filter(x => x.id !== id); closeSheet(); render(); toast("Expense deleted");
+  try { await store.deleteExpense(id); } catch (e) { toast("Couldn't delete. Try again."); }
+});
+function upsertLocal(exp) { const i = expenses.findIndex(x => x.id === exp.id); if (i >= 0) expenses[i] = exp; else expenses.push(exp); }
+function newId() { return (crypto.randomUUID ? crypto.randomUUID() : Date.now() + "-" + Math.random().toString(36).slice(2)).replace(/[^a-zA-Z0-9-]/g, ""); }
+async function updateSettings(patch) {
+  settings = { ...settings, ...patch }; render();
+  try { await store.saveSettings(settings); } catch (e) { toast("Couldn't save settings. Try again."); }
+}
+let toastT;
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), 2200); }
+
+/* ---------- Storage ---------- */
+function localStore() {
+  const load = () => { try { return JSON.parse(localStorage.getItem(LS_KEY) || "null"); } catch (e) { return null; } };
+  const persist = () => { try { localStorage.setItem(LS_KEY, JSON.stringify({ settings, expenses })); } catch (e) {} };
+  const saved = load();
+  if (saved) { settings = { ...DEFAULTS, ...saved.settings }; expenses = saved.expenses || []; }
+  return { mode: "local", saveExpense: async () => persist(), deleteExpense: async () => persist(), saveSettings: async () => persist() };
+}
+function dbStore(db) {
+  const col = db.collection("expenses");
+  const sdoc = db.doc("trip/settings");
+  col.onSnapshot(snap => {
+    expenses = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(e => e.date && isFinite(e.gbp));
+    render();
+  }, () => toast("Lost connection to saved expenses. Reload to reconnect."));
+  sdoc.onSnapshot(snap => {
+    if (snap.exists) { settings = { ...DEFAULTS, ...snap.data() }; render(); }
+  });
+  return {
+    mode: "db",
+    saveExpense: e => { const { id, ...body } = e; return col.doc(id).set(body); },
+    deleteExpense: id => col.doc(id).delete(),
+    saveSettings: s => sdoc.set({ ...s }),
+  };
+}
+
+store = localStore();
+render();
+(async () => {
+  const db = window.claude?.use ? await window.claude.use("db").catch(() => null) : null;
+  if (db) { store = dbStore(db); render(); }
+})();
+</script>
+
+</body></html>
